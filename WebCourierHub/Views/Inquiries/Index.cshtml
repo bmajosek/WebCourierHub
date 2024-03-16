@@ -1,0 +1,17 @@
+﻿@model WebCourierHub.Classes.InquiriesDto
+
+<h2>Inquiries</h2>
+
+<div>
+    @Html.Partial("~/Views/Shared/Navigationbar.cshtml", Model)
+    @Html.Partial("~/Views/Shared/_InquiriesGrid.cshtml", Model)
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".details-button").click(function () {
+            var deliveryId = $(this).data("id");
+            window.location.href = "/Inquiries/Details/" + deliveryId;
+        });
+    });
+</script>

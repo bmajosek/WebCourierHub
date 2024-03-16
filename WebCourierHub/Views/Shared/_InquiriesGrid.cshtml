@@ -1,0 +1,23 @@
+﻿@model WebCourierHub.Classes.InquiriesDto
+@using NonFactors.Mvc.Grid;
+@{
+    var Inquires = Model.Inquiries;
+}
+@(Html
+    .Grid(Inquires)
+    .Build(columns =>
+    {
+        columns.Add(p => p.Id).Titled("Id");
+        columns.Add(p => p.Destination == null ? "ulica dymna" : p.Destination.Street).Titled("Destination street");
+        columns.Add(p => p.Source == null ? "ulica piwna" : p.Source.Street).Titled("Source street");
+        columns.Add(p => p.Priority).Titled("Priority");
+        columns.Add(p => p.PickupDate).Titled("Pickup Date");
+        columns.Add(p => p.DeliveryDate).Titled("Delivery Date");
+        columns.Add(model => $"<button data-id=\"{model.Id}\" class=\"btn btn-info details-button\">Details</button>").Encoded(false);
+    })
+    .Using(GridFilterMode.Header)
+    .Empty("No data found")
+    .Filterable()
+    .Sortable()
+    .Pageable()
+)

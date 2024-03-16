@@ -1,0 +1,24 @@
+﻿@model List<WebCourierHub.Classes.DeliveryDto>
+@using NonFactors.Mvc.Grid;
+@{
+    var deliveries = Model;
+}
+
+@(Html
+    .Grid(deliveries)
+    .Build(columns =>
+    {
+        columns.Add(p => p.Id).Titled("Id");
+        columns.Add(p => p.StatusName).Titled("Status");
+        columns.Add(p => p.CompanyName).Titled("Company");
+        columns.Add(p => p.DateOfDelivery).Titled("Date of Delivery");
+        columns.Add(p => p.CourierName).Titled("Courier Name");
+
+        columns.Add(model => $"<button data-id=\"{model.Id}\" class=\"btn btn-info details-button\">Details</button>").Encoded(false);
+    })
+    .Using(GridFilterMode.Header)
+    .Empty("No data found")
+    .Filterable()
+    .Sortable()
+    .Pageable()
+)

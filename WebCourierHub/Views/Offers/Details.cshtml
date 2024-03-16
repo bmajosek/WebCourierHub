@@ -1,0 +1,199 @@
+﻿@model WebCourierApi.Model.DTO.DeliveryDTO
+
+<h2>Offer</h2>
+
+@if (Model == null)
+{
+	<script>location.href = "/offers"</script>
+} 
+else
+{
+	<div>
+		<div style="float: left; width: 50%; padding: 10px">
+			<div>
+				<h4>Status: @Model.RequestStatus</h4>
+			</div>
+			<hr/>
+			<div>
+				<h4>Package</h4>
+				<div>Dimensions: @Model.Inquire!.Package.WidthCM cm x @Model.Inquire!.Package.LengthCM cm x @Model.Inquire!.Package.HeightCM cm</div>
+				<div>Weight: @Model.Inquire!.Package.WeightKG kg</div>
+			</div>
+			<hr/>
+			<div>
+				<h4>Pickup</h4>
+				<div>Date: @Model.Inquire!.PickupDate</div>
+				<div>Address: 
+					<div>
+						@Model.Inquire!.PickupAddress.Street 
+						@Model.Inquire!.PickupAddress.BuildingNumber 
+						@(Model.Inquire!.PickupAddress.ApartmentNumber.HasValue ? $"/{@Model.Inquire!.PickupAddress.ApartmentNumber}" : string.Empty) <br/>
+						@Model.Inquire!.PickupAddress.ZipCode @Model.Inquire!.PickupAddress.Town @Model.Inquire!.PickupAddress.Country
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div>
+				<h4>Delivery</h4>
+				<div>Date: @Model.Inquire!.DeliveryDate</div>
+				<div>Address: 
+					<div>
+						@Model.Inquire!.DeliveryAddress.Street 
+						@Model.Inquire!.DeliveryAddress.BuildingNumber 
+						@(Model.Inquire!.DeliveryAddress.ApartmentNumber.HasValue ? $"/{@Model.Inquire!.DeliveryAddress.ApartmentNumber}" : string.Empty) <br/>
+						@Model.Inquire!.DeliveryAddress.ZipCode @Model.Inquire!.DeliveryAddress.Town @Model.Inquire!.DeliveryAddress.Country
+					</div>
+				</div>
+				<div>
+					Options: 
+					<input type="checkbox" onclick="return false;" @(Model.Inquire!.DeliveryOptions.HighPriority ? "checked" : string.Empty) /><label>High Priority</label>
+					<input type="checkbox" onclick="return false;" @(Model.Inquire!.DeliveryOptions.WeekendDelivery ? "checked" : string.Empty) /><label>Weekend Delivery</label>
+					<input type="checkbox" onclick="return false;" @(Model.Inquire!.DeliveryOptions.IsForCompany ? "checked" : string.Empty) /><label>For company</label>
+				</div>
+			</div>
+			<hr/>
+			<div>
+				<h4>Pricing</h4>
+				<div>Base: @Model.Pricing.Base @Model.Pricing.Currency</div>
+				<div>Fees: @Model.Pricing.Fees @Model.Pricing.Currency</div>
+				<div>Taxes: @Model.Pricing.Taxes @Model.Pricing.Currency</div>
+				<div>Total: @Model.Pricing.Total @Model.Pricing.Currency</div>
+			</div>
+		</div>
+		<div style="float: left; width: 50%; padding: 10px">
+			<div>
+				<h4>Client</h4>
+				<div>Email address: @Model.Client.EmailAddress</div>
+				<div>@(
+					Model.Inquire!.DeliveryOptions.IsForCompany
+						? $"Company Name: {Model.Client.CompanyName}"
+						: $"Name: {Model.Client.FirstName} {Model.Client.LastName}" 
+				)</div>
+			</div>
+			<hr/>
+			<div>
+				<h4>Metadata</h4>
+				<div>Inquire created: @Model.Inquire!.CreationDate</div>
+				<div>Offer picked: @Model.CreationDate</div>
+				<div>Last modified: @Model.ModificationDate</div>
+			</div>
+			@if (Model.Process != null)
+			{
+				<hr/>
+				<div>
+					<h4>Delivery process</h4>
+					<h6>Status: @Model.Process?.DeliveryStatus</h6>
+					<ol>
+						@if (Model.Process?.DeliveryStatus == "Started")
+						{
+							<li><p>Package has not been picked up yet.</p></li>
+						} else
+						{
+							<li><p>@Model.Process?.PickupCourierName picked up the package (@Model.Process?.PickupTimestamp).</p></li>
+						}
+						@if (Model.Process?.DeliveryStatus == "Delivered")
+						{
+							<li><p>@Model.Process?.DeliveryCourierName delivered the package (@Model.Process?.DeliveryTimestamp).</p></li>
+						}
+						@if (Model.Process?.DeliveryStatus == "CannotDeliver")
+						{
+							<li>
+								<p>@Model.Process?.DeliveryCourierName was unable to deliver the package (@Model.Process?.DeliveryTimestamp). </p>
+								<p>Reason: <em>@Model.Process?.Notes</em></p>
+							</li>
+						}
+					</ol>
+				</div>
+			}
+			<hr/>
+			<div>
+				@if (Model.RequestStatus == "Pending")
+				{
+					<button id="accept-btn" class="btn btn-success">Accept</button>
+					<button id="reject-btn" class="btn btn-warning">Reject</button>
+				}
+				<button id="delete-btn" class="btn btn-danger">Delete</button>
+				<a asp-action="Index" class="btn btn-link">Back</a>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function () {
+			$("#accept-btn").click(function (event) {
+				event.preventDefault();
+				$.ajax({
+					type: "PATCH",
+					url: "/offers/" + @Model.Id + "/accept",
+					contentType: "application/json; charset=utf-8",
+					success: function (msg) {
+						Swal.fire({
+							icon: "success",
+							title: "Success",
+							text: "The offer has been accepted!",
+						}).then(() => { 
+							location.href = "/offers/" + @Model.Id;
+						});
+					},
+					error: function (error) {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: error.responseText,
+						});
+					}
+				});
+			});
+
+			$("#reject-btn").click(function (event) {
+				event.preventDefault();
+				$.ajax({
+					type: "PATCH",
+					url: "/offers/" + @Model.Id + "/reject",
+					contentType: "application/json; charset=utf-8",
+					success: function (msg) {
+						Swal.fire({
+							icon: "success",
+							title: "Success",
+							text: "The offer has been rejected!",
+						}).then(() => { 
+							location.href = "/offers/" + @Model.Id;
+						});
+					},
+					error: function (error) {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: error.responseText,
+						});
+					}
+				});
+			});
+
+			$("#delete-btn").click(function (event) {
+				event.preventDefault();
+				$.ajax({
+					type: "DELETE",
+					url: "/offers/" + @Model.Id,
+					contentType: "application/json; charset=utf-8",
+					success: function (msg) {
+						Swal.fire({
+							icon: "success",
+							title: "Success",
+							text: "The offer has been deleted!",
+						}).then(() => { 
+							location.href = "/offers/";
+						});
+					},
+					error: function (error) {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: error.responseText,
+						});
+					}
+				});
+			});
+		});
+	</script>
+}

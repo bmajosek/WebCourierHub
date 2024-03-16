@@ -1,0 +1,23 @@
+﻿@model List<WebCourierApi.Model.DTO.DeliveryDTO>
+
+<h2>Deliveries</h2>
+
+<div>
+	@(
+		Html.Grid(Model)
+			.Build(columns =>
+			{
+				columns.Add(d => d.CreationDate).Titled("Creation Date");
+				columns.Add(d => d.Client.EmailAddress).Titled("Client email");
+				columns.Add(d => d.Process!.DeliveryStatus).Titled("Delivery status");
+				columns.Add(d => d.Inquire!.PickupDate).Titled("Pickup date");
+				columns.Add(d => d.Inquire!.DeliveryDate).Titled("Delivery date");
+				columns.Add(d => $"<a href=\"/Deliveries/{d.Id}\" class=\"btn btn-info details-button\">Details</a>").Encoded(false).Titled("More");
+			})
+			.Using(GridFilterMode.Header)
+			.Empty("No data found")
+			.Filterable()
+			.Sortable()
+			.Pageable()
+	)
+</div>

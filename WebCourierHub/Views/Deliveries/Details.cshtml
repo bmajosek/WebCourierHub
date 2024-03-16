@@ -1,0 +1,233 @@
+﻿@model WebCourierApi.Model.DTO.DeliveryDTO
+
+<h2>Delivery</h2>
+
+@if (Model == null)
+{
+	<script>location.href = "/offers"</script>
+} 
+else
+{
+	<div>
+		<div style="float: left; width: 50%; padding: 10px">
+			<div>
+				<h4>Package</h4>
+				<div>Dimensions: @Model.Inquire!.Package.WidthCM cm x @Model.Inquire!.Package.LengthCM cm x @Model.Inquire!.Package.HeightCM cm</div>
+				<div>Weight: @Model.Inquire!.Package.WeightKG kg</div>
+			</div>
+			<hr />
+			<div>
+				<h4>Pickup</h4>
+				<div>Date: @Model.Inquire!.PickupDate</div>
+				<div>
+					Address:
+					<div>
+						@Model.Inquire!.PickupAddress.Street
+						@Model.Inquire!.PickupAddress.BuildingNumber
+						@(Model.Inquire!.PickupAddress.ApartmentNumber.HasValue ? $"/{@Model.Inquire!.PickupAddress.ApartmentNumber}" : string.Empty) <br />
+						@Model.Inquire!.PickupAddress.ZipCode @Model.Inquire!.PickupAddress.Town @Model.Inquire!.PickupAddress.Country
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div>
+				<h4>Delivery</h4>
+				<div>Date: @Model.Inquire!.DeliveryDate</div>
+				<div>
+					Address:
+					<div>
+						@Model.Inquire!.DeliveryAddress.Street
+						@Model.Inquire!.DeliveryAddress.BuildingNumber
+						@(Model.Inquire!.DeliveryAddress.ApartmentNumber.HasValue ? $"/{@Model.Inquire!.DeliveryAddress.ApartmentNumber}" : string.Empty) <br />
+						@Model.Inquire!.DeliveryAddress.ZipCode @Model.Inquire!.DeliveryAddress.Town @Model.Inquire!.DeliveryAddress.Country
+					</div>
+				</div>
+				<div>
+					Options:
+					<input type="checkbox" onclick="return false;" @(Model.Inquire!.DeliveryOptions.HighPriority ? "checked" : string.Empty) /><label>High Priority</label>
+					<input type="checkbox" onclick="return false;" @(Model.Inquire!.DeliveryOptions.WeekendDelivery ? "checked" : string.Empty) /><label>Weekend Delivery</label>
+					<input type="checkbox" onclick="return false;" @(Model.Inquire!.DeliveryOptions.IsForCompany ? "checked" : string.Empty) /><label>For company</label>
+				</div>
+			</div>
+		</div>
+		<div style="float: left; width: 50%; padding: 10px">
+			<div>
+				<h4>Client</h4>
+				<div>Email address: @Model.Client.EmailAddress</div>
+				<div>
+					@(
+						Model.Inquire!.DeliveryOptions.IsForCompany
+						? $"Company Name: {Model.Client.CompanyName}"
+						: $"Name: {Model.Client.FirstName} {Model.Client.LastName}"
+					)
+				</div>
+			</div>
+			<hr />
+			<div>
+				<h4>Metadata</h4>
+				<div>Inquire created: @Model.Inquire!.CreationDate</div>
+				<div>Offer picked: @Model.CreationDate</div>
+				<div>Last modified: @Model.ModificationDate</div>
+			</div>
+			@if (Model.Process != null)
+			{
+				<hr/>
+				<div>
+					<h4>Delivery process</h4>
+					<h6>Status: @Model.Process?.DeliveryStatus</h6>
+					<ol>
+						@if (Model.Process?.DeliveryStatus == "Started")
+						{
+							<li><p>Package has not been picked up yet.</p></li>
+						} else
+						{
+							<li><p>@Model.Process?.PickupCourierName picked up the package (@Model.Process?.PickupTimestamp).</p></li>
+						}
+						@if (Model.Process?.DeliveryStatus == "Delivered")
+						{
+							<li><p>@Model.Process?.DeliveryCourierName delivered the package (@Model.Process?.DeliveryTimestamp).</p></li>
+						}
+						@if (Model.Process?.DeliveryStatus == "CannotDeliver")
+						{
+							<li>
+								<p>@Model.Process?.DeliveryCourierName was unable to deliver the package (@Model.Process?.DeliveryTimestamp). </p>
+								<p>Reason: <em>@Model.Process?.Notes</em></p>
+							</li>
+						}
+					</ol>
+				</div>
+			}
+			<hr />
+			<div>
+				@if (Model.Process?.DeliveryStatus == "Started")
+				{
+					<button id="pickup-btn" class="btn btn-info">Pick up</button>
+				}
+				@if (Model.Process?.DeliveryStatus == "PickedUp")
+				{
+					<button id="deliver-btn" type="button" class="btn btn-success">Fulfil delivery</button>
+					<button id="cannot-deliver-btn" type="button" data-bs-toggle="modal" data-bs-target="#reasonModal" class="btn btn-warning">Give up delivery</button>
+				}
+				<a asp-action="Index" class="btn btn-link">Back</a>
+				<button id="generate-receipt-btn" class="btn btn-primary">Generate Receipt</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="reasonModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Reason</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<textarea id="reason-textarea" class="w-100" maxlength="100"></textarea>
+				</div>
+				<div class="modal-footer">
+					<button id="reason-submit-btn" type="button" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function () {
+			$("#pickup-btn").click(function (event) {
+				event.preventDefault();
+				$.ajax({
+					type: "PATCH",
+					url: "/deliveries/" + @Model.Id + "/pickup",
+					contentType: "application/json; charset=utf-8",
+					success: function (msg) {
+						Swal.fire({
+							icon: "success",
+							title: "Success",
+							text: "The delivery has been picked up!",
+						}).then(() => { 
+							location.href = "/deliveries/" + @Model.Id;
+						});
+					},
+					error: function (error) {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Unable to pick up delivery.",
+						});
+					}
+				});
+			});
+
+			$("#deliver-btn").click(function (event) {
+				event.preventDefault();
+				$.ajax({
+					type: "PATCH",
+					url: "/deliveries/" + @Model.Id + "/fulfil",
+					contentType: "application/json; charset=utf-8",
+					success: function (msg) {
+						Swal.fire({
+							icon: "success",
+							title: "Success",
+							text: "The delivery has been fulfilled!",
+						}).then(() => { 
+							location.href = "/deliveries/" + @Model.Id;
+						});
+					},
+					error: function (error) {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Unable to fulfil delivery.",
+						});
+					}
+				});
+			});
+
+			$("#reason-submit-btn").click(function (event) {
+				event.preventDefault();
+				$.ajax({
+					type: "PATCH",
+					url: "/deliveries/" + @Model.Id + "/giveup?reason=" + $("#reason-textarea").val(),
+					contentType: "application/json; charset=utf-8",
+					success: function (msg) {
+						Swal.fire({
+							icon: "success",
+							title: "Success",
+							text: "The delivery has been given up!",
+						}).then(() => { 
+							location.href = "/deliveries/" + @Model.Id;
+						});
+					},
+					error: function (error) {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Unable to give up delivery.",
+						});
+					}
+				});
+			});
+
+			$("#generate-receipt-btn").click(function () {
+				// Trigger the action to generate and save the receipt
+				$.ajax({
+					type: "POST",
+					url: "/deliveries/@Model.Id/generate-receipt",
+					contentType: "application/json; charset=utf-8",
+					success: function (response) {
+						// Redirect the user to the generated receipt URL
+						window.location.href = response.receiptUrl;
+					},
+					error: function (error) {
+						console.error("Error generating receipt:", error);
+						// Handle error if needed
+					}
+				});
+			});
+
+		});
+	</script>
+}

@@ -1,0 +1,36 @@
+﻿@model WebCourierHub.Models.Inquiry
+
+<h2>Inquiry Details</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">Id:</dt>
+    <dd class="col-sm-10">@Model.Id</dd>
+
+    <dt class="col-sm-2">Destination Street:</dt>
+    <dd class="col-sm-10">@Model.Destination?.Street</dd>
+
+    <dt class="col-sm-2">Source Street:</dt>
+    <dd class="col-sm-10">@Model.Source?.Street</dd>
+
+    <dt class="col-sm-2">Priority:</dt>
+    <dd class="col-sm-10">@Model.Priority</dd>
+
+    <dt class="col-sm-2">Company:</dt>
+    <dd class="col-sm-10">@Model.Company?.Name</dd>
+
+    <dt class="col-sm-2">Pickup Date:</dt>
+    <dd class="col-sm-10">@Model.PickupDate</dd>
+
+    <dt class="col-sm-2">Delivery Date:</dt>
+    <dd class="col-sm-10">@Model.DeliveryDate</dd>
+
+    <dt class="col-sm-2">Delivery at Weekend:</dt>
+    <dd class="col-sm-10">@Model.DeliveryAtWeekend</dd>
+
+    <dt class="col-sm-2">Status:</dt>
+    <dd class="col-sm-10">@Model.Status?.Name</dd>
+</dl>
+
+<div class="text-center">
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+</div>

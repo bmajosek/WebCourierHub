@@ -1,0 +1,23 @@
+﻿@model List<WebCourierApi.Model.DTO.DeliveryDTO>
+@using NonFactors.Mvc.Grid;
+
+@(Html
+    .Grid(Model)
+    .Build(columns =>
+    {
+        columns.Add(d => d.CreationDate).Titled("Creation Date");
+        columns.Add(d => d.Client).Titled("Client");
+        columns.Add(d => $"{d.Pricing.Total} {d.Pricing.Currency}").Titled("Client");
+        columns.Add(d => d.RequestStatus).Titled("Request status");
+        columns.Add(d => d.Process == null ? "N/A" : d.Process.DeliveryStatus).Titled("Delivery status");
+
+        columns.Add(model => $"<button data-id=\"{model.Id}\" class=\"btn btn-success accept-button\">Accept</button>").Encoded(false);
+        columns.Add(model => $"<button data-id=\"{model.Id}\" class=\"btn btn-danger reject-button\">Reject</button>").Encoded(false);
+        columns.Add(model => $"<button data-id=\"{model.Id}\" class=\"btn btn-info details-button\">Details</button>").Encoded(false);
+    })
+    .Using(GridFilterMode.Header)
+    .Empty("No data found")
+    .Filterable()
+    .Sortable()
+    .Pageable()
+)

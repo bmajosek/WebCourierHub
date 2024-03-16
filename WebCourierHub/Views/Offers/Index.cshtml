@@ -1,0 +1,23 @@
+﻿@model List<WebCourierApi.Model.DTO.DeliveryDTO>
+
+<h2>Offers</h2>
+
+<div>
+	@(
+		Html.Grid(Model)
+			.Build(columns =>
+			{
+				columns.Add(d => d.CreationDate).Titled("Creation Date");
+				columns.Add(d => d.Client.EmailAddress).Titled("Client email");
+				columns.Add(d => $"{d.Pricing.Total} {d.Pricing.Currency}").Titled("Total Price");
+				columns.Add(d => d.RequestStatus).Titled("Request status");
+				columns.Add(d => d.Process == null ? "N/A" : d.Process.DeliveryStatus).Titled("Delivery status");
+				columns.Add(d => $"<a href=\"/Offers/{d.Id}\" class=\"btn btn-info details-button\">Details</a>").Encoded(false).Titled("More");
+			})
+			.Using(GridFilterMode.Header)
+			.Empty("No data found")
+			.Filterable()
+			.Sortable()
+			.Pageable()
+	)
+</div>

@@ -1,0 +1,17 @@
+﻿@model WebCourierHub.Classes.InquiriesDto
+@{
+    var Role = Model.Role;
+}
+
+<div>
+    @if(Role == "Client")
+    {
+        @Html.ActionLink("My Inquiries", "GetMy", "Inquiries", new {clientId = Model.IdentityName}, new { @class = "btn btn-light rounded-pill px-3" })
+        @Html.ActionLink("My Inquiries", "GetTheLatest", "Inquiries", new {id = Model.IdentityName, type = "Client"}, new { @class = "btn btn-light rounded-pill px-3" })
+    }
+    else
+    {
+        @Html.ActionLink("Company Inquiries", "GetCompany", "Inquiries", new {companyName = Model.CompanyName}, new { @class = "btn btn-light rounded-pill px-3" })
+        @Html.ActionLink("My Inquiries", "GetTheLatest", "Inquiries", new {id = Model.CompanyName, type = "Company"}, new { @class = "btn btn-light rounded-pill px-3" })
+    }
+</div>

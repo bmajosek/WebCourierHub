@@ -1,0 +1,342 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+<head>
+    <title>Courier Hub</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Courier Hub</h1>
+        <p>We connect you with courier services</p>
+    </header>
+    <section id="description">
+        <h2>About Us</h2>
+        <p>Courier Hub allows you to request courier services from various companies.</p>
+        <p>Join us now to send your parcels and packages with ease!</p>
+        <a href="create-inquiry.html">Create an Inquiry</a>
+    </section>
+    <section>
+        <h2>Request a Courier</h2>
+        <form id="inquiryForm">
+            <div class="form-group">
+                <label for="package-dimensions">Package Length:</label>
+                <input type="text" id="package-length" name="Package.Length" required>
+            </div>
+            <div class="form-group">
+                <label for="package-dimensions">Package Width:</label>
+                <input type="text" id="package-width" name="Package.Width" required>
+            </div>
+            <div class="form-group">
+                <label for="package-dimensions">Package Height:</label>
+                <input type="text" id="package-height" name="Package.Height" required>
+            </div>
+            <div class="form-group">
+                <label for="package-weight">Package Weight:</label>
+                <input type="text" id="package-weight" name="Package.Weight" required>
+            </div>
+
+            <div class="form-group">
+                <label for="delivery-date">Delivery Date:</label>
+                <input type="date" id="delivery-date" name="DeliveryDate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="source-address">Source Address:</label>
+                <input type="text" id="source-street" name="Source.Street" required>
+            </div>
+            <div class="form-group">
+                <label for="source-city">Source City:</label>
+                <input type="text" id="source-city" name="Source.City" required>
+            </div>
+
+            <div class="form-group">
+                <label for="source-state">Source State:</label>
+                <input type="text" id="source-state" name="Source.State" required>
+            </div>
+
+            <div class="form-group">
+                <label for="source-postal-code">Source Postal Code:</label>
+                <input type="text" id="source-postal-code" name="Source.PostalCode" required>
+            </div>
+
+            <div class="form-group">
+                <label for="source-country">Source Country:</label>
+                <input type="text" id="source-country" name="Source.Country" required>
+            </div>
+
+            <div class="form-group">
+                <label for="destination-address">Destination Address:</label>
+                <input type="text" id="destination-street" name="Destination.Street" required>
+            </div>
+            <div class="form-group">
+                <label for="destination-city">Destination City:</label>
+                <input type="text" id="destination-city" name="Destination.City" required>
+            </div>
+
+            <div class="form-group">
+                <label for="destination-state">Destination State:</label>
+                <input type="text" id="destination-state" name="Destination.State" required>
+            </div>
+
+            <div class="form-group">
+                <label for="destination-postal-code">Destination Postal Code:</label>
+                <input type="text" id="destination-postal-code" name="Destination.PostalCode" required>
+            </div>
+
+            <div class="form-group">
+                <label for="destination-country">Destination Country:</label>
+                <input type="text" id="destination-country" name="Destination.Country" required>
+            </div>
+
+            <div class="form-group">
+                <label for="company-name">Company Name:</label>
+                <input type="text" id="company-name" name="Company.Name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="company-street">Company Street:</label>
+                <input type="text" id="company-street" name="Company.Address.Street" required>
+            </div>
+
+            <div class="form-group">
+                <label for="company-city">Company City:</label>
+                <input type="text" id="company-city" name="Company.Address.City" required>
+            </div>
+
+            <div class="form-group">
+                <label for="company-state">Company State:</label>
+                <input type="text" id="company-state" name="Company.Address.State" required>
+            </div>
+
+            <div class="form-group">
+                <label for="company-postal-code">Company Postal Code:</label>
+                <input type="text" id="company-postal-code" name="Company.Address.PostalCode" required>
+            </div>
+
+            <div class="form-group">
+                <label for="company-country">Company Country:</label>
+                <input type="text" id="company-country" name="Company.Address.Country" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nip">NIP:</label>
+                <input type="text" id="nip" name="Company.NIP" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pickup-date">Pickup Date:</label>
+                <input type="date" id="pickup-date" name="PickupDate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="priority">Priority:</label>
+                <select id="priority" name="Priority">
+                    <option value="False">Low</option>
+                    <option value="True">High</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="weekend-delivery">Delivery on Weekend</label>
+                <input type="checkbox" id="weekend-delivery" name="DeliveryAtWeekend">
+            </div>
+
+            <button class="submit-button" type="submit">Submit Inquiry</button>
+        </form>
+    </section>
+    <section id="newsletter">
+        <h2>Newsletter</h2>
+        <input id="newsletter-email" type="email" placeholder="Wpisz email" required />
+        <button id="subscribe-button">Zapisz się</button>
+    </section>
+    <footer>
+        <p>&copy; 2023 Courier Hub</p>
+    </footer>
+    <div class="modal fade" id="offersModal" tabindex="-1" role="dialog" aria-labelledby="offersModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="offersModalLabel">Dostępne Oferty</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul id="offersList">
+                        <!-- Oferty zostaną wstawione tutaj -->
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+   $(document).ready(function () {
+        function openOffersModal(offers, createdInq, offer2, offer3) {
+            var offersList = $('#offersList');
+            offersList.empty(); // Clears the offer list
+
+            offers.forEach(function (offer) {
+                offersList.append('<li>Oferta z firmy naszej :) ' +
+                    ' - Cena: ' + offer.pricing.total +
+                    ' ' + offer.pricing.currency +
+                    ' <button class="btn btn-primary" onclick="selectOffer(\'' + offer.offerNumber + '\', \'' + createdInq.id + '\', ' + 0 + ', ' + offer.pricing.total + ')">Wybierz</button></li>');
+            });
+
+            offersList.append('<li>Oferta z firmy prowadzacego ' +
+                ' - Cena: ' + offer2.totalPrice +
+                ' ' + offer2.currency +
+                ' <button class="btn btn-primary" onclick="selectOffer(\'' + offer2.inquiryId + '\', \'' + offer2.inquiryId + '\', ' + 1 + ')">Wybierz</button></li>');
+
+            offersList.append('<li>Oferta z firmy ' + offer3.companyName +
+                ' - Cena: ' + offer3.price +
+                ' ' + offer3.currency +
+                ' <button class="btn btn-primary" onclick="selectOffer(\'' + offer3.uuid + '\', \'' + offer3.uuid + '\', ' + 2 + ')">Wybierz</button></li>');
+
+            $('#offersModal').modal('show');
+        }
+
+        // Funkcja do wybrania oferty
+        window.selectOffer = function (offerNumber, createdInq, numberOfCompany, totalPrice) {
+            console.log("Wybrano ofertę: " + offerNumber + " dla zapytania: " + createdInq);
+            var formData = {
+                offerNumber: offerNumber.toString(), 
+                id: createdInq.toString(),
+                totalPrice: totalPrice
+            };
+            var jsonData = JSON.stringify(formData);
+
+            $.ajax({
+                type: "POST",
+                url: "/api/Inquiries/offers/pick/" + numberOfCompany,
+                data: jsonData,
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "The offer has been choosen!",
+                    });
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Inquiry has not been added!",
+                    });
+                }
+            });
+
+            $('#offersModal').modal('hide');
+        };
+
+        // Zamykanie modalu
+        $('.close').click(function () {
+            $('#offersModal').hide();
+        });
+        $('#subscribe-button').click(function () {
+            var mail = $('#newsletter-email').val();
+            var formData = {
+                mail: mail
+            };
+            var jsonData = JSON.stringify(formData);
+            if (mail) {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/Newsletter/Add",
+                    data: jsonData,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Subscribed",
+                            text: "You have successfully subscribed to the newsletter!",
+                        });
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "There was an error subscribing to the newsletter.",
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Warning",
+                    text: "Please enter a valid email address.",
+                });
+            }
+        });
+
+      $("#inquiryForm").submit(function (event) {
+         event.preventDefault();
+         var clientId = '@ViewBag.User';
+        var formData = {
+                Destination: {
+                    Street: $("#destination-street").val(),
+                    City: $("#destination-city").val(),
+                    State: $("#destination-state").val(),
+                    PostalCode: $("#destination-postal-code").val(),
+                    Country: $("#destination-country").val() 
+                },
+                Source: {
+                    Street: $("#source-street").val(),
+                    City: $("#source-city").val(),
+                    State: $("#source-state").val(),
+                    PostalCode: $("#source-postal-code").val(),
+                    Country: $("#source-country").val()
+                },
+                Package: {
+                    Length: parseFloat($("#package-length").val()),
+                    Width: parseFloat($("#package-width").val()),
+                    Height: parseFloat($("#package-height").val()),
+                    Weight: parseFloat($("#package-weight").val())
+                },
+                Priority: $("#priority").val() === "True", 
+                Company: {
+                    Name: $("#company-name").val(),
+                    Address: {
+                        Street: $("#company-street").val(),
+                        City: $("#company-city").val(),
+                        State: $("#company-state").val(),
+                        PostalCode: $("#company-postal-code").val(),
+                        Country: $("#company-country").val()
+                    },
+                    NIP: $("#nip").val()
+                },
+                PickupDate: $("#pickup-date").val(),
+                DeliveryDate: $("#delivery-date").val(), 
+                DeliveryAtWeekend: $("#weekend-delivery").is(":checked"),
+                ClientId: clientId,
+            Status: {
+                Name: "Brak"
+            }
+        };
+
+        var jsonData = JSON.stringify(formData);
+
+        $.ajax({
+            type: "POST",
+            url: "/api/Inquiries/Add",
+            data: jsonData,
+            contentType: "application/json; charset=utf-8",
+            success: function (msg) {
+                openOffersModal(msg.offers, msg.inquiry, msg.offers2, msg.offers3);
+            },
+            error: function (error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Inquiry has not been added!",
+                });
+            }
+        });
+      });
+   });
+</script>
